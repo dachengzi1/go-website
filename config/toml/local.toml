@@ -1,0 +1,13 @@
+env="local"
+
+[mysql]
+  ip = "localhost"
+  port = 3306
+  user = "root"
+  password = "root1234"
+  database = "school"
+
+[redis]
+  ip = "localhost"
+  port = 6379
+  db = 0
