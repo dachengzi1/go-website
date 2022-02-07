@@ -3,7 +3,7 @@ package cache
 import (
 	"fmt"
 	"github.com/go-redis/redis"
-	"goschool/config"
+	"go-website/config"
 	"time"
 )
 

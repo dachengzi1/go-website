@@ -1,6 +1,6 @@
 package model
 
-import "goschool/db"
+import "go-website/db"
 
 type Admin struct {
 	Id       int64  `json:"id" gorm:"column:id"` // 列名为 `id`

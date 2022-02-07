@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"goschool/model"
+	"go-website/model"
 	"net/http"
 )
 

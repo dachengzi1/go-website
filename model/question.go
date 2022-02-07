@@ -1,7 +1,7 @@
 package model
 
 import (
-	"goschool/db"
+	"go-website/db"
 	"time"
 )
 

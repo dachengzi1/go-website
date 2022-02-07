@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	. "goschool/db"
-	"goschool/model"
+	. "go-website/db"
+	"go-website/model"
 	"net/http"
 	"strconv"
 	"time"

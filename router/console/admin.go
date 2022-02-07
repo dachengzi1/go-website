@@ -2,7 +2,7 @@ package console
 
 import (
 	"github.com/gin-gonic/gin"
-	"goschool/service"
+	"go-website/service"
 )
 
 

@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"goschool/cache"
-	_ "goschool/config"
-	"goschool/db"
-	"goschool/middleware"
-	"goschool/router"
-	_ "goschool/task"
+	"go-website/cache"
+	_ "go-website/config"
+	"go-website/db"
+	"go-website/middleware"
+	"go-website/router"
+	_ "go-website/task"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	//"context"
 	"sync/atomic"
 	"testing"
-	"goschool/taskPoll"
+	"go-website/taskPoll"
 )
 
 var sum int64
