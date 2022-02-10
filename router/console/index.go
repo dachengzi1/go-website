@@ -10,6 +10,8 @@ func InitConsoleRouter(r *gin.Engine) {
 	{
 		AdminRouter(v1)
 		QuestionRouter(v1)
+		ExerciseRouter(v1)
+
 	}
 
 	//v1 := r.Group("/console")
