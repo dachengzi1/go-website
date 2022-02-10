@@ -18,32 +18,25 @@ func CreateExercise(c *gin.Context) {
 		return
 	}
 
+	//todo ? 事物处理
+	var questions []model.Question
+
+	db.Where("(id) IN ?", postExercise.QuestionIds).Find(&questions)
+	fmt.Println(questions)
+	if err != nil {
+		fmt.Printf("insert question Groups err:", err)
+	}
+
 	ex := model.Exercise{
 		Title:       postExercise.Title,
 		Description: postExercise.Description,
 		Deleted:     postExercise.Deleted,
 		Type:        postExercise.Type,
+		Questions:   questions,
 	}
 	result := db.Save(&ex)
 	if result.Error != nil {
 		fmt.Printf("insert Exercise err:", err)
-	}
-
-	fmt.Println(postExercise, "ExerciseId：", ex.Id)
-
-	var questionGroups []model.QuestionGroup
-	fmt.Println(postExercise.QuestionIds)
-	for k, v := range postExercise.QuestionIds {
-		//todo? 未判断question 是否存在
-		fmt.Printf("question index: %d, value: %d", k, v)
-		questionGroups = append(questionGroups, model.QuestionGroup{
-			ExerciseId: ex.Id,
-			QuestionId: v,
-		})
-	}
-	err = db.Create(&questionGroups).Error
-	if err != nil {
-		fmt.Printf("insert question Groups err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -53,15 +46,18 @@ func CreateExercise(c *gin.Context) {
 
 func GetExercise(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	var exs []model.Exercise
+	var ex model.Exercise
 	db := Db
-	err := db.First(&exs, id).Error
-	if err != nil {
-		fmt.Printf("find question group  err:", err)
+
+	ex.Id = id
+	result := db.Preload("Questions").Find(&ex)
+
+	if result.Error != nil {
+		fmt.Printf("find question group  err:", result.Error)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"code":   0,
-		"result": exs,
+		"code":     0,
+		"exercise": ex,
 	})
 	return
 

@@ -2,11 +2,11 @@ package db
 
 import (
 	"fmt"
+	"go-website/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"go-website/config"
 )
 
 var (
