@@ -22,7 +22,6 @@ func CreateExercise(c *gin.Context) {
 	var questions []model.Question
 
 	db.Where("(id) IN ?", postExercise.QuestionIds).Find(&questions)
-	fmt.Println(questions)
 	if err != nil {
 		fmt.Printf("insert question Groups err:", err)
 	}
@@ -104,4 +103,11 @@ func GetExercise(c *gin.Context) {
 	//		"result": obj,
 	//	})
 	//	return
+}
+
+func SaveExercise(c *gin.Context) {
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+	})
 }
