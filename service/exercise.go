@@ -105,9 +105,54 @@ func GetExercise(c *gin.Context) {
 	//	return
 }
 
-func SaveExercise(c *gin.Context) {
+func SaveUserExercise(c *gin.Context) {
 
+	//todo ? 假数据
+	var questions []model.MyQuestion
+	resultQeustion := []int{1, 2, 3}
+	db := Db
+	for k := range resultQeustion {
+		questions = append(questions, model.MyQuestion{
+			UserId:     1,
+			QuestionId: k,
+			UserScore:  2,
+			UserAnswer: "A,B",
+			Status:     1,
+		})
+	}
+	ex := model.MyExercise{
+		ExerciseId:   5,
+		UserId:       1,
+		Status:       "finished",
+		Score:        2,
+		CorrectCount: 1,
+		WrongCount:   2,
+		MyQuestions:  questions,
+	}
+	result := db.Save(&ex)
+	if result.Error != nil {
+		fmt.Printf("save Exercise err:", result.Error)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 	})
+	return
+}
+
+func GetUserExercise(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var ex model.MyExercise
+	db := Db
+
+	ex.Id = id
+	result := db.Preload("MyQuestions").Find(&ex)
+
+	if result.Error != nil {
+		fmt.Printf("find question group  err:", result.Error)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":     0,
+		"exercise": ex,
+	})
+	return
 }

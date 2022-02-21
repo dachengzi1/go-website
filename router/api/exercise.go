@@ -8,6 +8,7 @@ import (
 func ExerciseRouter(router *gin.RouterGroup) {
 	r := router.Group("exercise")
 
-	r.POST("/save", service.SaveExercise)
+	r.POST("/save", service.SaveUserExercise)
+	r.GET("/:id", service.GetUserExercise)
 
 }
