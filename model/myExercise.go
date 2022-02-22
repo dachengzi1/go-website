@@ -42,15 +42,23 @@ type (
 		CreatedAt    time.Time `gorm:"created_at" json:"createdAt"`
 		UpdatedAt    time.Time `gorm:"updated_at" json:"updatedAt"`
 	}
+
+	QuestionResult struct {
+		QuestionId   int              `json:"questionId"`
+		UserAnswer   string              `json:"userAnswer"`
+	}
+	SubMitExercise struct {
+		ExerciseId   int              `json:"exerciseId"`
+		MyQuestions  []QuestionResult `json:"myQuestions"`
+		Status       string              `json:"status"`
+	}
+
 	//QuestionResult struct {
 	//	QuestionId int       `json:"questionId"`
 	//	UserAnswer string    `json:"userAnswer"`
 	//	CreatedAt  time.Time `gorm:"created_at" json:"createdAt"`
 	//	UpdatedAt  time.Time `gorm:"updated_at" json:"updatedAt"`
 	//}
-	SubMitExercise struct {
-		ExerciseId   int              `json:"exerciseId"`
-		MyQuestions  []MyQuestion `json:"myQuestions"`
-		Status       int              `json:"status"`
-	}
+
+
 )

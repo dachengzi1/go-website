@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	. "go-website/db"
 	"go-website/model"
+	"go-website/res"
 	"net/http"
 	"strconv"
 )
@@ -106,28 +107,75 @@ func GetExercise(c *gin.Context) {
 }
 
 func SaveUserExercise(c *gin.Context) {
-
-	//todo ? 假数据
-	var questions []model.MyQuestion
-	resultQeustion := []int{1, 2, 3}
 	db := Db
-	for k := range resultQeustion {
-		questions = append(questions, model.MyQuestion{
-			UserId:     1,
-			QuestionId: k,
-			UserScore:  2,
-			UserAnswer: "A,B",
-			Status:     1,
+	interData, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+		})
+		return
+	}
+	u := interData.(model.User)
+
+	var SubMitExercise model.SubMitExercise
+	var qIds = make([]int, len(SubMitExercise.MyQuestions))
+	var questions []model.Question
+
+	err := c.ShouldBindJSON(&SubMitExercise)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, res.MarshalJsonErr)
+		return
+	}
+
+	for _, v := range SubMitExercise.MyQuestions {
+		qIds = append(qIds, v.QuestionId)
+	}
+
+	err = db.Where("(id) IN ?", qIds).Find(&questions).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, res.ParamErr)
+		return
+	}
+
+	questionObj := make(map[int]interface{}, len(questions))
+
+	for _, v := range questions {
+		questionObj[v.Id] = v
+	}
+	userScore := 0
+	correctCount := 0
+	wrongCount := 0
+	myQuestion := make([]model.MyQuestion, len(SubMitExercise.MyQuestions))
+	for _, v := range SubMitExercise.MyQuestions {
+		interQ, _ := questionObj[v.QuestionId]
+		question := interQ.(model.Question)
+		score := 0
+		status := 0
+		if question.Answer == v.UserAnswer {
+			score = int(question.Score)
+			userScore = userScore + score
+			correctCount++
+			status = 1
+		} else {
+			wrongCount++
+		}
+		myQuestion = append(myQuestion, model.MyQuestion{
+			UserId:     u.Id,
+			QuestionId: v.QuestionId,
+			UserScore:  score,
+			UserAnswer: v.UserAnswer,
+			Status:     status,
 		})
 	}
+
 	ex := model.MyExercise{
-		ExerciseId:   5,
-		UserId:       1,
+		ExerciseId:   SubMitExercise.ExerciseId,
+		UserId:       u.Id,
 		Status:       "finished",
-		Score:        2,
-		CorrectCount: 1,
-		WrongCount:   2,
-		MyQuestions:  questions,
+		Score:        userScore,
+		CorrectCount: correctCount,
+		WrongCount:   wrongCount,
+		MyQuestions:  myQuestion,
 	}
 	result := db.Save(&ex)
 	if result.Error != nil {
@@ -140,11 +188,22 @@ func SaveUserExercise(c *gin.Context) {
 }
 
 func GetUserExercise(c *gin.Context) {
+	interData, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+		})
+		return
+	}
+	u := interData.(model.User)
+	fmt.Println("user:", u, u.Id)
+
 	id, _ := strconv.Atoi(c.Param("id"))
 	var ex model.MyExercise
 	db := Db
 
 	ex.Id = id
+	ex.UserId = u.Id
 	result := db.Preload("MyQuestions").Find(&ex)
 
 	if result.Error != nil {
