@@ -204,14 +204,70 @@ func GetUserExercise(c *gin.Context) {
 
 	ex.Id = id
 	ex.UserId = u.Id
-	result := db.Preload("MyQuestions").Find(&ex)
-
+	result := db.Preload("MyQuestions", "user_id = ? ", u.Id).Find(&ex)
 	if result.Error != nil {
-		fmt.Printf("find question group  err:", result.Error)
+		fmt.Printf("find my question group  err:", result.Error)
 	}
+
+	var questions []model.Question
+	var qIds = make([]int, len(ex.MyQuestions))
+	for _, v := range ex.MyQuestions {
+		qIds = append(qIds, v.QuestionId)
+	}
+
+	err := db.Where("(id) IN ?", qIds).Find(&questions).Error
+	if err != nil {
+		fmt.Printf("find my question group  err:", result.Error)
+	}
+
+	questionObj := make(map[int]interface{}, len(questions))
+
+	for _, v := range questions {
+		questionObj[v.Id] = v
+	}
+
+	var myQuestions []model.MyQuestionDetail
+
+	fmt.Println("len(ex.MyQuestions):", len(ex.MyQuestions))
+	for _, v := range ex.MyQuestions {
+		interQ, _ := questionObj[v.QuestionId]
+		question := interQ.(model.Question)
+		fmt.Println("ex.MyQuestions  id:", v.Id)
+		myQuestions = append(myQuestions, model.MyQuestionDetail{
+			Id:         v.Id,
+			Context:    question.Context,
+			Question:   question.Question,
+			Option1:    question.Option1,
+			Option2:    question.Option2,
+			Option3:    question.Option3,
+			Option4:    question.Option4,
+			Score:      question.Score,
+			Source:     question.Source,
+			Year:       question.Year,
+			Section:    question.Section,
+			No:         question.No,
+			Sn:         question.Sn,
+			QuestionId: v.QuestionId,
+			UserScore:  v.UserScore,
+			UserAnswer: v.UserAnswer,
+			Status:     v.Status,
+		})
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"code":     0,
-		"exercise": ex,
+		"code": 0,
+		"exercise": model.MyExerciseDetail{
+			Id:           ex.Id,
+			ExerciseId:   ex.ExerciseId,
+			MyQuestions:  myQuestions,
+			UserId:       ex.UserId,
+			Status:       ex.Status,
+			Score:        ex.Score, //总分数
+			CorrectCount: ex.CorrectCount,
+			WrongCount:   ex.WrongCount,
+			CreatedAt:    ex.CreatedAt,
+			UpdatedAt:    ex.UpdatedAt,
+		},
 	})
 	return
 }
