@@ -265,8 +265,8 @@ func GetUserExercise(c *gin.Context) {
 			Score:        ex.Score, //总分数
 			CorrectCount: ex.CorrectCount,
 			WrongCount:   ex.WrongCount,
-			CreatedAt:    ex.CreatedAt,
-			UpdatedAt:    ex.UpdatedAt,
+			CreatedAt:    ex.CreatedAt.UnixMilli(),
+			UpdatedAt:    ex.UpdatedAt.UnixMilli(),
 		},
 	})
 	return

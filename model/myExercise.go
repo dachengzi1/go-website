@@ -81,8 +81,8 @@ type (
 		Score        int                `json:"score"`        //总分数
 		CorrectCount int                `json:"correctCount"` //正确数量
 		WrongCount   int                `json:"wrongCount"`   //错误数量
-		CreatedAt    time.Time          `json:"createdAt"`
-		UpdatedAt    time.Time          `json:"updatedAt"`
+		CreatedAt    int64          `json:"createdAt"`
+		UpdatedAt    int64          `json:"updatedAt"`
 	}
 
 )

@@ -32,7 +32,7 @@ func ApiAuth() gin.HandlerFunc {
 		var user model.User
 		err = conn.Where("id = ?", userId).First(&user).Error
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusOK, res.ParamErr.Error("Invalid user"))
+			c.AbortWithStatusJSON(http.StatusOK, res.ParamErr.Error("Invalid User"))
 			return
 		}
 		fmt.Println("user id:", userId, user)
