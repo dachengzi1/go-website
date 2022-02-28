@@ -11,6 +11,7 @@ func InitApiRouter(r *gin.Engine) {
 
 		ExerciseRouter(v1)
 		InitUserRouter(v1)
+		InitPubRouter(v1)
 
 	}
 }
